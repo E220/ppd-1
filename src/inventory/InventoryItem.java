@@ -4,7 +4,7 @@ import models.Product;
 
 public class InventoryItem {
     private final Product product;
-    private final int quantity;
+    private int quantity;
 
     public InventoryItem(Product product, int quantity) {
         this.product = product;
@@ -21,5 +21,9 @@ public class InventoryItem {
 
     public int getQuantity() {
         return this.quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }
