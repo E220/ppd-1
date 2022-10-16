@@ -1,5 +1,8 @@
+import inventory.Inventory;
+import inventory.InventoryFactory;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        final Inventory i = InventoryFactory.getNewInventory();
     }
 }
