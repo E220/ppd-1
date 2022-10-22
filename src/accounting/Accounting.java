@@ -14,6 +14,7 @@ public class Accounting {
 
     public boolean incomeEqualsBillsTotal() {
         int total = this.bills.stream().mapToInt(Bill::getTotal).sum();
+        System.out.println(total + "==" + this.income);
         return total == this.income;
     }
 }
