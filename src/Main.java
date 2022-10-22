@@ -18,7 +18,7 @@ public class Main {
             threadList.add(thread);
         }
 
-        threadList.forEach(Thread::run);
+        threadList.forEach(Thread::start);
         for (Thread thread : threadList) {
             thread.join();
         }

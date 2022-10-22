@@ -20,8 +20,10 @@ public class Customer implements Runnable {
     @Override
     public void run() {
         final List<Product> products = this.market.getInventory().getProducts();
-        final Collection<Product> basket = selectRandomItems(products);
-        this.market.buyProducts(basket);
+        for (int i = 0; i < 10; i++) {
+            final Collection<Product> basket = selectRandomItems(products);
+            this.market.buyProducts(basket);
+        }
     }
 
     public <T> Collection<T> selectRandomItems(List<T> items) {
