@@ -16,6 +16,10 @@ public class Market {
         this.inventory = inventory;
     }
 
+    public Inventory getInventory() {
+        return this.inventory;
+    }
+
     public void buyProducts(Collection<Product> products) {
         final Bill bill = BillFactory.billForProducts(products);
         if (inventory.hasEnough(bill.getQuantities())) {

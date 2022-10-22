@@ -1,9 +1,11 @@
 package inventory;
 
+import models.Product;
 import utils.QuantityMap;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Inventory {
@@ -23,6 +25,10 @@ public class Inventory {
 
     public boolean hasEnough(QuantityMap quantities) {
         return this.items.entrySet().stream()
-                .noneMatch(entry -> quantities.get(entry.getKey()) > entry.getValue().getQuantity());
+                .noneMatch(entry -> quantities.getOrDefault(entry.getKey(), 0) > entry.getValue().getQuantity());
+    }
+
+    public List<Product> getProducts() {
+        return items.values().stream().map(InventoryItem::getProduct).toList();
     }
 }
