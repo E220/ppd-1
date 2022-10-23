@@ -19,6 +19,8 @@ public class Main {
         }
 
         threadList.forEach(Thread::start);
+        for (int i = 0; i < 10; i++)
+            System.out.println(market.checkIntegrity());
         for (Thread thread : threadList) {
             thread.join();
         }

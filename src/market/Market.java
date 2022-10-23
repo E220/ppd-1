@@ -4,17 +4,22 @@ import accounting.Accounting;
 import accounting.Bill;
 import accounting.BillFactory;
 import inventory.Inventory;
+import locks.LockManager;
 import models.Product;
 import utils.QuantityMap;
 
 import java.util.Collection;
+import java.util.Set;
 
 public class Market {
     private final Inventory inventory;
     private final Accounting accounting = new Accounting();
 
+    private final LockManager lockManager;
+
     public Market(Inventory inventory) {
         this.inventory = inventory;
+        this.lockManager = new LockManager(this.inventory.getOriginalQuantities().keySet());
     }
 
     public Inventory getInventory() {
@@ -23,15 +28,31 @@ public class Market {
 
     public void buyProducts(Collection<Product> products) {
         final Bill bill = BillFactory.billForProducts(products);
-        if (inventory.hasEnough(bill.getQuantities())) {
-            inventory.remove(bill.getQuantities());
+        final QuantityMap quantities = bill.getQuantities();
+        final Set<Integer> ids = quantities.keySet();
+
+        lockManager.lockForWrite(ids);
+        if (inventory.hasEnough(quantities)) {
+            inventory.remove(quantities);
+            lockManager.unlockAfterWrite(ids);
+
+            lockManager.lockBillsForWrite();
             accounting.addBill(bill);
+            lockManager.unlockBillsAfterWrite();
+        } else {
+            lockManager.unlockAfterWrite(ids);
         }
     }
 
     public boolean checkIntegrity() {
-        return this.accounting.incomeEqualsBillsTotal() &&
+        final Set<Integer> ids = inventory.getOriginalQuantities().keySet();
+        lockManager.lockForRead(ids);
+        lockManager.lockBillsForRead();
+        final boolean result = this.accounting.incomeEqualsBillsTotal() &&
                 this.billsMatchInventory();
+        lockManager.unlockBillsAfterRead();
+        lockManager.unlockAfterRead(ids);
+        return result;
     }
 
     private boolean billsMatchInventory() {
