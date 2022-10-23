@@ -5,6 +5,7 @@ import accounting.Bill;
 import accounting.BillFactory;
 import inventory.Inventory;
 import models.Product;
+import utils.QuantityMap;
 
 import java.util.Collection;
 
@@ -29,6 +30,16 @@ public class Market {
     }
 
     public boolean checkIntegrity() {
-        return this.accounting.incomeEqualsBillsTotal();
+        return this.accounting.incomeEqualsBillsTotal() &&
+                this.billsMatchInventory();
+    }
+
+    private boolean billsMatchInventory() {
+        final QuantityMap current = inventory.getQuantities();
+        final QuantityMap original = inventory.getOriginalQuantities();
+        final QuantityMap sold = accounting.getQuantities();
+        return original.keySet().stream().allMatch(
+                id -> original.get(id) - sold.getOrDefault(id, 0) == current.get(id)
+        );
     }
 }

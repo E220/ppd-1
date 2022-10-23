@@ -10,10 +10,12 @@ import java.util.Map;
 
 public class Inventory {
     private final Map<Integer, InventoryItem> items;
+    private final QuantityMap originalQuantities;
 
     public Inventory(Collection<InventoryItem> items) {
         this.items = new HashMap<>(items.size());
         items.forEach(item -> this.items.put(item.getId(), item));
+        originalQuantities = this.getQuantities();
     }
 
     public void remove(QuantityMap quantities) {
@@ -30,5 +32,15 @@ public class Inventory {
 
     public List<Product> getProducts() {
         return items.values().stream().map(InventoryItem::getProduct).toList();
+    }
+
+    public QuantityMap getQuantities() {
+        final QuantityMap quantityMap = new QuantityMap(items.size());
+        items.values().forEach(item -> quantityMap.put(item.getId(), item.getQuantity()));
+        return quantityMap;
+    }
+
+    public QuantityMap getOriginalQuantities() {
+        return originalQuantities;
     }
 }

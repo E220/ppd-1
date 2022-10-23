@@ -1,5 +1,7 @@
 package accounting;
 
+import utils.QuantityMap;
+
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -16,5 +18,14 @@ public class Accounting {
         int total = this.bills.stream().mapToInt(Bill::getTotal).sum();
         System.out.println(total + "==" + this.income);
         return total == this.income;
+    }
+
+    public QuantityMap getQuantities() {
+        final QuantityMap quantityMap = new QuantityMap();
+        bills.forEach(bill -> bill.getQuantities().forEach((id, quantity) -> {
+            final int q = quantityMap.getOrDefault(id, 0);
+            quantityMap.put(id, q + quantity);
+        }));
+        return quantityMap;
     }
 }
